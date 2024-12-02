@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <string.h>
+#include <unistd.h>
+
+// Message structure
+struct message {
+    long msg_type;
+    char msg_text[100];
+};
+
+int main() {
+    key_t key = ftok("msgfile", 65); // Generate unique key
+    int msgid = msgget(key, 0666 | IPC_CREAT); // Create message queue
+    if (msgid == -1) {
+        perror("msgget");
+        exit(1);
+    }
+
+    if (fork() == 0) {
+        // Producer process: Send a message
+        struct message msg;
+        msg.msg_type = 1; // Message type
+        strcpy(msg.msg_text, "Hello from Producer!");
+        if (msgsnd(msgid, &msg, sizeof(msg.msg_text), 0) == -1) {
+            perror("msgsnd");
+            exit(1);
+        }
+        printf("Producer: Message sent to queue.\n");
+    } else {
+        // Consumer process: Receive a message
+        struct message msg;
+        sleep(1); // Ensure producer sends first
+        if (msgrcv(msgid, &msg, sizeof(msg.msg_text), 1, 0) == -1) {
+            perror("msgrcv");
+            exit(1);
+        }
+        printf("Consumer: Message received: %s\n", msg.msg_text);
+
+        // Remove the message queue
+        msgctl(msgid, IPC_RMID, NULL);
+    }
+
+    return 0;
+}
