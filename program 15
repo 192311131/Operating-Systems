@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_USERS 5
+#define MAX_FILES 5
+
+typedef struct {
+    char username[20];
+    char files[MAX_FILES][20];
+    int fileCount;
+} User;
+
+User users[MAX_USERS];
+int userCount = 0;
+
+void addUser() {
+    if (userCount < MAX_USERS) {
+        printf("Enter username: ");
+        scanf("%s", users[userCount].username);
+        users[userCount].fileCount = 0;
+        userCount++;
+        printf("User added.\n");
+    } else {
+        printf("Max users reached.\n");
+    }
+}
+
+void createFile() {
+    char username[20], filename[20];
+    printf("Enter username: ");
+    scanf("%s", username);
+    for (int i = 0; i < userCount; i++) {
+        if (strcmp(users[i].username, username) == 0) {
+            if (users[i].fileCount < MAX_FILES) {
+                printf("Enter file name: ");
+                scanf("%s", filename);
+                strcpy(users[i].files[users[i].fileCount], filename);
+                users[i].fileCount++;
+                printf("File created.\n");
+            } else {
+                printf("Max files reached for user.\n");
+            }
+            return;
+        }
+    }
+    printf("User not found.\n");
+}
+
+void listFiles() {
+    char username[20];
+    printf("Enter username: ");
+    scanf("%s", username);
+    for (int i = 0; i < userCount; i++) {
+        if (strcmp(users[i].username, username) == 0) {
+            printf("Files for %s:\n", username);
+            for (int j = 0; j < users[i].fileCount; j++) {
+                printf("- %s\n", users[i].files[j]);
+            }
+            return;
+        }
+    }
+    printf("User not found.\n");
+}
+
+int main() {
+    int choice;
+    do {
+        printf("\n1. Add User\n2. Create File\n3. List Files\n4. Exit\nEnter choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1: addUser(); break;
+            case 2: createFile(); break;
+            case 3: listFiles(); break;
+            case 4: printf("Exiting.\n"); break;
+            default: printf("Invalid choice.\n");
+        }
+    } while (choice != 4);
+    return 0;
+}
