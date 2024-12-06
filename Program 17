@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_PROCESSES 5
+#define MAX_RESOURCES 3
+
+void calculateNeed(int need[MAX_PROCESSES][MAX_RESOURCES], int max[MAX_PROCESSES][MAX_RESOURCES], int allocation[MAX_PROCESSES][MAX_RESOURCES], int n, int m) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            need[i][j] = max[i][j] - allocation[i][j];
+        }
+    }
+}
+
+bool isSafe(int processes[], int available[], int max[][MAX_RESOURCES], int allocation[][MAX_RESOURCES], int n, int m) {
+    int need[MAX_PROCESSES][MAX_RESOURCES];
+    calculateNeed(need, max, allocation, n, m);
+
+    bool finish[MAX_PROCESSES] = {false};
+    int safeSequence[MAX_PROCESSES];
+    int work[MAX_RESOURCES];
+
+    for (int i = 0; i < m; i++) {
+        work[i] = available[i];
+    }
+
+    int count = 0;
+    while (count < n) {
+        bool found = false;
+        for (int p = 0; p < n; p++) {
+            if (!finish[p]) {
+                bool canAllocate = true;
+                for (int j = 0; j < m; j++) {
+                    if (need[p][j] > work[j]) {
+                        canAllocate = false;
+                        break;
+                    }
+                }
+
+                if (canAllocate) {
+                    for (int j = 0; j < m; j++) {
+                        work[j] += allocation[p][j];
+                    }
+                    safeSequence[count++] = processes[p];
+                    finish[p] = true;
+                    found = true;
+                }
+            }
+        }
+
+        if (!found) {
+            printf("System is in an unsafe state.\n");
+            return false;
+        }
+    }
+
+    printf("System is in a safe state.\nSafe sequence: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", safeSequence[i]);
+    }
+    printf("\n");
+    return true;
+}
+
+int main() {
+    int processes[] = {0, 1, 2, 3, 4};
+    int n = 5; // Number of processes
+    int m = 3; // Number of resources
+
+    int available[] = {3, 3, 2}; // Available resources
+
+    int max[MAX_PROCESSES][MAX_RESOURCES] = {
+        {7, 5, 3},
+        {3, 2, 2},
+        {9, 0, 2},
+        {2, 2, 2},
+        {4, 3, 3}
+    };
+
+    int allocation[MAX_PROCESSES][MAX_RESOURCES] = {
+        {0, 1, 0},
+        {2, 0, 0},
+        {3, 0, 2},
+        {2, 1, 1},
+        {0, 0, 2}
+    };
+
+    isSafe(processes, available, max, allocation, n, m);
+
+    return 0;
+}
