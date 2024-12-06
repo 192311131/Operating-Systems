@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_FILES 100
+
+int main() {
+    char files[MAX_FILES][50]; // Array to store file names
+    int fileCount = 0;         // Number of files in the directory
+    int choice;
+    char filename[50];
+
+    do {
+        printf("\nSingle-Level Directory:\n");
+        printf("1. Create File\n");
+        printf("2. Delete File\n");
+        printf("3. List Files\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1: // Create File
+                if (fileCount < MAX_FILES) {
+                    printf("Enter the file name: ");
+                    scanf("%s", filename);
+                    strcpy(files[fileCount], filename);
+                    fileCount++;
+                    printf("File '%s' created successfully.\n", filename);
+                } else {
+                    printf("Directory is full. Cannot create more files.\n");
+                }
+                break;
+
+            case 2: // Delete File
+                printf("Enter the file name to delete: ");
+                scanf("%s", filename);
+                int found = 0;
+                for (int i = 0; i < fileCount; i++) {
+                    if (strcmp(files[i], filename) == 0) {
+                        found = 1;
+                        for (int j = i; j < fileCount - 1; j++) {
+                            strcpy(files[j], files[j + 1]);
+                        }
+                        fileCount--;
+                        printf("File '%s' deleted successfully.\n", filename);
+                        break;
+                    }
+                }
+                if (!found) {
+                    printf("File '%s' not found.\n", filename);
+                }
+                break;
+
+            case 3: // List Files
+                if (fileCount == 0) {
+                    printf("No files in the directory.\n");
+                } else {
+                    printf("Files in the directory:\n");
+                    for (int i = 0; i < fileCount; i++) {
+                        printf("%d. %s\n", i + 1, files[i]);
+                    }
+                }
+                break;
+
+            case 4: // Exit
+                printf("Exiting program.\n");
+                break;
+
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    } while (choice != 4);
+
+    return 0;
+}
