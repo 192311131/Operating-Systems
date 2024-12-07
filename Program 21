@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <unistd.h>
+
+sem_t rw_mutex, mutex;
+int read_count = 0; // Number of active readers
+int shared_data = 0;
+
+void* reader(void* arg) {
+    int id = *(int*)arg;
+
+    sem_wait(&mutex);           // Lock to update read_count
+    read_count++;
+    if (read_count == 1) {
+        sem_wait(&rw_mutex);    // First reader locks resource
+    }
+    sem_post(&mutex);           // Unlock after updating read_count
+
+    // Reading section
+    printf("Reader %d: Read shared data = %d\n", id, shared_data);
+    sleep(1);
+
+    sem_wait(&mutex);           // Lock to update read_count
+    read_count--;
+    if (read_count == 0) {
+        sem_post(&rw_mutex);    // Last reader unlocks resource
+    }
+    sem_post(&mutex);           // Unlock after updating read_count
+
+    return NULL;
+}
+
+void* writer(void* arg) {
+    int id = *(int*)arg;
+
+    sem_wait(&rw_mutex);        // Lock resource for writing
+    shared_data += 1;           // Writing section
+    printf("Writer %d: Updated shared data to %d\n", id, shared_data);
+    sleep(1);
+    sem_post(&rw_mutex);        // Unlock resource
+
+    return NULL;
+}
+
+int main() {
+    pthread_t readers[3], writers[2];
+    int reader_ids[3] = {1, 2, 3};
+    int writer_ids[2] = {1, 2};
+
+    // Initialize semaphores
+    sem_init(&rw_mutex, 0, 1);
+    sem_init(&mutex, 0, 1);
+
+    // Create reader and writer threads
+    pthread_create(&writers[0], NULL, writer, &writer_ids[0]);
+    pthread_create(&readers[0], NULL, reader, &reader_ids[0]);
+    pthread_create(&writers[1], NULL, writer, &writer_ids[1]);
+    pthread_create(&readers[1], NULL, reader, &reader_ids[1]);
+    pthread_create(&readers[2], NULL, reader, &reader_ids[2]);
+
+    // Wait for threads to finish
+    for (int i = 0; i < 3; i++) {
+        pthread_join(readers[i], NULL);
+    }
+    for (int i = 0; i < 2; i++) {
+        pthread_join(writers[i], NULL);
+    }
+
+    // Destroy semaphores
+    sem_destroy(&rw_mutex);
+    sem_destroy(&mutex);
+
+    return 0;
+}
