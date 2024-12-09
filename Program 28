@@ -1,0 +1,14 @@
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    FILE *fp = fopen("example.txt", "r");
+    char line[100], pattern[] = "test";
+    while (fgets(line, sizeof(line), fp)) {
+        if (strstr(line, pattern)) {
+            printf("%s", line);
+        }
+    }
+    fclose(fp);
+    return 0;
+}
