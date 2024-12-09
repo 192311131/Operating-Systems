@@ -1,0 +1,14 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main() {
+    int fd = creat("example.txt", 0644);
+    write(fd, "Hello, World!", 13);
+    close(fd);
+    fd = open("example.txt", O_RDONLY);
+    char buffer[13];
+    read(fd, buffer, 13);
+    printf("%s\n", buffer);
+    return 0;
+}
