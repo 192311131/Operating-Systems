@@ -1,0 +1,13 @@
+#include <stdio.h>
+
+int main() {
+    int memory[] = {10, 20, 30};
+    int process = 25;
+    for (int i = 0; i < 3; i++) {
+        if (memory[i] >= process) {
+            printf("Process allocated %d units of memory\n", memory[i]);
+            break;
+        }
+    }
+    return 0;
+}
