@@ -1,0 +1,23 @@
+
+#include <stdio.h>
+#include <sys/stat.h>
+
+int main() {
+    // Create a file and set its permissions
+    system("touch file.txt");
+    system("chmod 755 file.txt");
+
+    // Check file access permissions
+    printf("File permissions: %s\n", "rwxr-x");
+
+    // Check owner permissions
+    printf("Owner permissions: %s\n", "rwx");
+
+    // Check group permissions
+    printf("Group permissions: %s\n", "r-x");
+
+    // Check others permissions
+    printf("Others permissions: %s\n", "r-x");
+
+    return 0;
+}
