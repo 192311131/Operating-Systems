@@ -1,0 +1,23 @@
+#include <stdio.h>
+
+struct Block {
+    char data;
+    struct Block* next;
+};
+
+int main() {
+    // Initialize linked list
+    struct Block block1 = {'A', NULL};
+    struct Block block2 = {'B', NULL};
+    struct Block block3 = {'C', NULL};
+    block1.next = &block2;
+    block2.next = &block3;
+
+    // Simulate file access
+    struct Block* current = &block1;
+    while (current != NULL) {
+        printf("%c ", current->data);
+        current = current->next;
+    }
+    return 0;
+}
