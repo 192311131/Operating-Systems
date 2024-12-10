@@ -1,0 +1,14 @@
+#include <stdio.h>
+
+int indexBlock[] = {1, 2, 3, 4, 5};
+char fileBlocks[] = {'A', 'B', 'C', 'D', 'E'};
+
+void accessFile(int blockNumber) {
+    int index = blockNumber - 1;
+    printf("Accessing block %d with data %c\n", indexBlock[index], fileBlocks[index]);
+}
+
+int main() {
+    accessFile(3);
+    return 0;
+}
