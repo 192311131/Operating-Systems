@@ -1,0 +1,22 @@
+#include <stdio.h>
+
+int requests[] = {100, 50, 200, 150};
+int n = sizeof(requests) / sizeof(requests[0]);
+int headPosition = 0;
+
+void cscan() {
+    int totalHeadMovement = 0;
+    for (int i = 0; i < n; i++) {
+        int distance = abs(requests[i] - headPosition);
+        totalHeadMovement += distance;
+        headPosition = requests[i];
+        printf("Head Position: %d\n", headPosition);
+    }
+    totalHeadMovement += headPosition; // move back to starting position
+    printf("Total Head Movement: %d\n", totalHeadMovement);
+}
+
+int main() {
+    cscan();
+    return 0;
+}
