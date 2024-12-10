@@ -1,0 +1,32 @@
+#include <stdio.h>
+
+int requests[] = {100, 50, 200, 150};
+int n = sizeof(requests) / sizeof(requests[0]);
+int headPosition = 50;
+int direction = 1;
+
+void scan() {
+    int totalHeadMovement = 0;
+    while (n > 0) {
+        int nearestRequest = -1;
+        int minDistance = 1000;
+        for (int i = 0; i < n; i++) {
+            int distance = abs(requests[i] - headPosition);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestRequest = i;
+            }
+        }
+        totalHeadMovement += minDistance;
+        headPosition = requests[nearestRequest];
+        requests[nearestRequest] = requests[n - 1];
+        n--;
+        printf("Head Position: %d\n", headPosition);
+    }
+    printf("Total Head Movement: %d\n", totalHeadMovement);
+}
+
+int main() {
+    scan();
+    return 0;
+}
