@@ -1,0 +1,15 @@
+#include <stdio.h>
+
+int records[] = {1, 2, 3, 4, 5};
+
+void accessRecord(int recordNumber) {
+    for (int i = 0; i < recordNumber; i++) {
+        printf("Reading record %d\n", records[i]);
+    }
+    printf("Accessing record %d\n", records[recordNumber - 1]);
+}
+
+int main() {
+    accessRecord(3);
+    return 0;
+}
